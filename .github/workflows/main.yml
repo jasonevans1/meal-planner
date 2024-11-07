@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  php:
+  test:
     name: PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
     # Service container Mysql mysql
@@ -69,3 +69,18 @@ jobs:
           DB_PASSWORD: secret
         run: |
           vendor/bin/pest
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build standalone Laravel binary
+        run: docker build -t static-laravel-app -f static-build.Dockerfile .
+
+      - name: Extract the binary
+        run: docker cp $(docker create --name static-laravel-app-tmp static-laravel-app):/go/src/app/dist/frankenphp-linux-x86_64 frankenphp-static-app ; docker rm static-laravel-app-tmp
+
+
