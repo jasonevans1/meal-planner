@@ -123,6 +123,7 @@ jobs:
             cd /root/packages
             mv frankenphp frankenphp-$(date +"%FT%H%M%S")
             mv frankenphp-static-app frankenphp
+            cd /root
             ln -s packages/frankenphp frankenphp
             ./frankenphp php-cli artisan migrate
             ./frankenphp php-cli artisan key:generate
