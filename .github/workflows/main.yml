@@ -121,10 +121,13 @@ jobs:
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
             cd /root/packages
+            ls -la
             mv frankenphp frankenphp-$(date +"%FT%H%M%S")
             mv frankenphp-static-app frankenphp
             cd /root
-            ln -s packages/frankenphp frankenphp
+            ls -la
+            ln -s /root/packages/frankenphp frankenphp
+            ls -la
             ./frankenphp php-cli artisan migrate
             ./frankenphp php-cli artisan key:generate
             ./frankenphp php-cli artisan config:cache
