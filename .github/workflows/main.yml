@@ -124,6 +124,7 @@ jobs:
             ls -la
             mv frankenphp frankenphp-$(date +"%FT%H%M%S")
             mv frankenphp-static-app/frankenphp-static-app frankenphp
+            chmod 755 frankenphp
             cd /root
             ls -la
             ./frankenphp php-cli artisan migrate --force
