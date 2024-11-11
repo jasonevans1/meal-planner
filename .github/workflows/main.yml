@@ -94,7 +94,7 @@ jobs:
       - name: Deploy to DigitalOcean
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ env.DO_SERVER_IP }}
+          host: ${{ vars.DO_SERVER_IP }}
           username: root
           key: ${{ secrets.DO_SSH_KEY }}
           source: frankenphp-static-app
@@ -103,7 +103,7 @@ jobs:
       - name: Restart the service
         uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ env.DO_SERVER_IP }}
+          host: ${{ vars.DO_SERVER_IP }}
           username: root
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
