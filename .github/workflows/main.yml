@@ -82,6 +82,12 @@ jobs:
 
       - name: Extract the binary
         run: docker cp $(docker create --name static-laravel-app-tmp static-laravel-app):/go/src/app/dist/frankenphp-linux-x86_64 frankenphp-static-app ; docker rm static-laravel-app-tmp
+
+      - name: Archive the binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: frankenphp-static-app
+          path: frankenphp-static-app
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -90,6 +96,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Download the binary
+        uses: actions/download-artifact@v4
+        with:
+          name: frankenphp-static-app
+          path: frankenphp-static-app
 
       - name: Deploy to DigitalOcean
         uses: appleboy/scp-action@v0.1.7
