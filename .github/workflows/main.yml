@@ -69,8 +69,8 @@ jobs:
           DB_PASSWORD: secret
         run: |
           vendor/bin/pest
-  deploy:
-    name: Deploy
+  build:
+    name: Build
     runs-on: ubuntu-latest
     needs: test
     steps:
@@ -82,5 +82,37 @@ jobs:
 
       - name: Extract the binary
         run: docker cp $(docker create --name static-laravel-app-tmp static-laravel-app):/go/src/app/dist/frankenphp-linux-x86_64 frankenphp-static-app ; docker rm static-laravel-app-tmp
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      - name: Deploy to DigitalOcean
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ env.DO_SERVER_IP }}
+          username: root
+          key: ${{ secrets.DO_SSH_KEY }}
+          source: frankenphp-static-app
+          target: /root/packages/
 
+      - name: Restart the service
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ env.DO_SERVER_IP }}
+          username: root
+          key: ${{ secrets.DO_SSH_KEY }}
+          script: |
+            cd /root/packages
+            mv frankenphp frankenphp-$(date +"%FT%H%M%S")
+            mv frankenphp-static-app frankenphp
+            ln -s packages/frankenphp frankenphp
+            ./frankenphp php-cli artisan migrate
+            ./frankenphp php-cli artisan key:generate
+            ./frankenphp php-cli artisan config:cache
+            killall -9 frankenphp
+            nohup ./frankenphp php-server --domain jasonevans.xyz --access-log > frankenphp-server.log &

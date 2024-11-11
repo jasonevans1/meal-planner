@@ -12,11 +12,6 @@ RUN rm -Rf tests/
 RUN cp .env.example .env
 # Change APP_ENV and APP_DEBUG to be production ready
 RUN sed -i'' -e 's/^APP_ENV=.*/APP_ENV=production/' -e 's/^APP_DEBUG=.*/APP_DEBUG=true/' .env
-RUN sed -i'' -e 's/^APP_URL=.*/APP_URL=https:\/\/jasonevans.xyz/' .env
-RUN sed -i'' -e 's/^DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
-RUN sed -i'' -e 's/^DB_HOST=.*/DB_HOST=127.0.0.1/' .env
-RUN sed -i'' -e 's/^DB_DATABASE=.*/DB_DATABASE=laravel/' .env
-RUN sed -i'' -e 's/^DB_USERNAME=.*/DB_USERNAME=laravel/' .env
 
 # Make other changes to your .env file if needed
 
