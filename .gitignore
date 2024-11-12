@@ -21,3 +21,4 @@ frankenphp
 /.idea
 /.vscode
 /.zed
+/mercure-database.db
