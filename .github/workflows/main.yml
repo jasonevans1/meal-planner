@@ -131,4 +131,4 @@ jobs:
             ./frankenphp php-cli artisan key:generate
             ./frankenphp php-cli artisan config:cache
             killall -9 frankenphp
-            nohup ./frankenphp php-server --domain jasonevans.xyz --access-log > frankenphp-server.log &
+            nohup /root/frankenphp php-server --domain jasonevans.xyz --access-log > frankenphp-server.log 2>&1 &
