@@ -125,6 +125,7 @@ jobs:
             mv frankenphp-static-app/frankenphp-static-app frankenphp
             chmod 755 frankenphp
             cd /var/www
+            ln -sf /var/www/packages/frankenphp frankenphp
             ./frankenphp php-cli artisan migrate --force
             ./frankenphp php-cli artisan key:generate
             ./frankenphp php-cli artisan config:cache
