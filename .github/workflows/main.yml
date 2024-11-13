@@ -103,32 +103,30 @@ jobs:
           name: frankenphp-static-app
           path: frankenphp-static-app
 
-      - name: Deploy to DigitalOcean
+      - name: Upload
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ vars.DO_SERVER_IP }}
-          username: root
-          key: ${{ secrets.DO_SSH_KEY }}
+          host: ${{ secrets.DEPLOY_SERVER_IP }}
+          username: ${{ secrets.DEPLOY_SERVER_USER }}
+          key: ${{ secrets.DEPLOY_SERVER_KEY }}
           timeout: 240s
           source: frankenphp-static-app
-          target: /root/packages/
+          target: /var/www/packages/
 
-      - name: Restart the service
+      - name: Deploy application
         uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ vars.DO_SERVER_IP }}
-          username: root
-          key: ${{ secrets.DO_SSH_KEY }}
+          host: ${{ secrets.DEPLOY_SERVER_IP }}
+          username: ${{ secrets.DEPLOY_SERVER_USER }}
+          key: ${{ secrets.DEPLOY_SERVER_KEY }}
           script: |
-            cd /root/packages
-            ls -la
-            mv frankenphp frankenphp-$(date +"%FT%H%M%S")
+            cd /var/www/packages
+            ls -d frankenphp >/dev/null 2>&1 && mv frankenphp frankenphp-$(date +"%FT%H%M%S")
             mv frankenphp-static-app/frankenphp-static-app frankenphp
             chmod 755 frankenphp
-            cd /root
-            ls -la
+            cd /var/www
             ./frankenphp php-cli artisan migrate --force
             ./frankenphp php-cli artisan key:generate
             ./frankenphp php-cli artisan config:cache
             killall -9 frankenphp
-            nohup /root/frankenphp php-server --domain jasonevans.xyz --access-log > frankenphp-server.log 2>&1 &
+            nohup /var/www/frankenphp php-server --domain jasonevans.xyz --access-log > frankenphp-server.log 2>&1 &
