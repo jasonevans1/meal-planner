@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 dunglas/frankenphp:static-builder
+FROM --platform=linux/amd64 dunglas/frankenphp:static-builder-1.2.5
 
 # Copy your app
 WORKDIR /go/src/app/dist/app
