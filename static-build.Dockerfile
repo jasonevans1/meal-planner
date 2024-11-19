@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 dunglas/frankenphp:static-builder-1.2.5
+FROM --platform=linux/amd64 dunglas/frankenphp:static-builder-1.3.1
 
 # Copy your app
 WORKDIR /go/src/app/dist/app
@@ -20,4 +20,5 @@ RUN composer install --ignore-platform-reqs --no-dev -a
 
 # Build the static binary
 WORKDIR /go/src/app/
+RUN rm -r dist/static-php-cli/watcher
 RUN EMBED=dist/app/ NO_COMPRESS=1 ./build-static.sh
