@@ -2,10 +2,6 @@
     servers {
         metrics
     }
-    admin :2019 {
-		origins localhost
-		enforce_origin
-	}
 
 	frankenphp {
 		#worker /path/to/your/worker.php
