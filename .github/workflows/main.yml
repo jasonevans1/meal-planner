@@ -74,17 +74,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build standalone Laravel binary
-        run: docker build -t static-laravel-app -f static-build.Dockerfile .
+      - name: Build Laravel package
+#       run: setup the .env file for the server.
+#        run: gzip exclude the .ddev directory and .git and .github directories
+        run: tar -czf meal-planner.tar.gz --exclude=.ddev --exclude=.git --exclude=.github .
 
-      - name: Extract the binary
-        run: docker cp $(docker create --name static-laravel-app-tmp static-laravel-app):/go/src/app/dist/frankenphp-linux-x86_64 frankenphp-static-app ; docker rm static-laravel-app-tmp
-
-      - name: Archive the binary
+      - name: Upload the archive file
         uses: actions/upload-artifact@v4
         with:
-          name: frankenphp-static-app
-          path: frankenphp-static-app
+          name: meal-planner.tar.gz
+          path: meal-planner.tar.gz
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -97,8 +96,8 @@ jobs:
       - name: Download the binary
         uses: actions/download-artifact@v4
         with:
-          name: frankenphp-static-app
-          path: frankenphp-static-app
+          name: meal-planner.tar.gz
+          path: meal-planner.tar.gz
 
       - name: Upload
         uses: appleboy/scp-action@v0.1.7
@@ -107,7 +106,7 @@ jobs:
           username: ${{ secrets.DEPLOY_SERVER_USER }}
           key: ${{ secrets.DEPLOY_SERVER_KEY }}
           timeout: 240s
-          source: frankenphp-static-app
+          source: meal-planner.tar.gz
           target: /var/www/packages/
 
       - name: Deploy application
@@ -118,13 +117,15 @@ jobs:
           key: ${{ secrets.DEPLOY_SERVER_KEY }}
           script: |
             cd /var/www/packages
-            ls -d frankenphp >/dev/null 2>&1 && mv frankenphp frankenphp-$(date +"%FT%H%M%S")
-            mv frankenphp-static-app/frankenphp-static-app frankenphp
-            chmod 755 frankenphp
-            cd /var/www
-            ln -sf /var/www/packages/frankenphp frankenphp
-            ./frankenphp php-cli artisan migrate --force
-            ./frankenphp php-cli artisan key:generate
-            ./frankenphp php-cli artisan config:cache
-            killall -9 frankenphp
-            nohup /var/www/frankenphp php-server --domain jasonevans.xyz --access-log > frankenphp-server.log 2>&1 &
+#           extract tar file to directory
+
+#            ls -d frankenphp >/dev/null 2>&1 && mv frankenphp frankenphp-$(date +"%FT%H%M%S")
+#            mv frankenphp-static-app/frankenphp-static-app frankenphp
+#            chmod 755 frankenphp
+#            cd /var/www
+#            ln -sf /var/www/packages/frankenphp frankenphp
+#            ./frankenphp php-cli artisan migrate --force
+#            ./frankenphp php-cli artisan key:generate
+#            ./frankenphp php-cli artisan config:cache
+#            killall -9 frankenphp
+#            nohup /var/www/frankenphp php-server --domain jasonevans.xyz --access-log > frankenphp-server.log 2>&1 &
