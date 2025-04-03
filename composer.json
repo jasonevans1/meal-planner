@@ -72,6 +72,12 @@
             "php-http/discovery": true
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/CoopExchange/pest-plugin-bdd"
+        }
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true
 }

@@ -22,3 +22,4 @@ frankenphp
 /.vscode
 /.zed
 /mercure-database.db
+/.env.testing
